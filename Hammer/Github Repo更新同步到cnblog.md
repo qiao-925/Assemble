@@ -287,7 +287,3 @@ jobs:
 - 核心修复：设置 git 配置，防止文件名中的非 ASCII 字符被转义
 git config --global core.quotepath false
 
-- 核心修复 ---添加这个字段，告诉博客园使用 Markdown 渲染器
-这个字段的值必须是 '[Markdown]'
-'mt_text_more': '[Markdown]'
-
