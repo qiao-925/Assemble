@@ -31,9 +31,9 @@ jobs:
       - name: Get changed markdown files
         id: changed-files
         run: |
-          # 使用 git diff 找出从上次提交到本次提交之间，在 posts 目录下发生变化的文件
+          # 使用 git diff 找出从上次提交到本次提交之间，# <--- 修改点 2: 监听仓库中所有 .md 文件
           # 并将文件名传递给下一步
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'posts/**.md')
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
           if [ -z "$FILES" ]; then
             echo "No markdown files changed. Skipping."
             echo "files_changed=false" >> $GITHUB_OUTPUT
