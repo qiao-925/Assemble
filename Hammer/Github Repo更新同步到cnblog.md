@@ -287,3 +287,5 @@ jobs:
 - 核心修复：设置 git 配置，防止文件名中的非 ASCII 字符被转义
 git config --global core.quotepath false
 
+- 修复同步后默认使用非markdown格式不进去问题
+参考：https://github.com/nickchen121/cnblogs_automatic_blog_uploading?tab=readme-ov-file
