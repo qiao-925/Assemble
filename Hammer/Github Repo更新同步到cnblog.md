@@ -283,8 +283,7 @@ jobs:
 - ASCII字符转义
 - 文件名包含空格
 
-```angular2html
-# .github/workflows/publish_to_cnblogs.yml
+```angular2html# .github/workflows/publish_to_cnblogs.yml
 
 name: Publish to Cnblogs
 
@@ -300,9 +299,8 @@ jobs:
   find-changed-files:
     runs-on: ubuntu-latest
     outputs:
-      # 将找到的文件列表作为 JSON 数组字符串输出
       files: ${{ steps.changed-files.outputs.files }}
-
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -312,37 +310,30 @@ jobs:
       - name: Get changed markdown files
         id: changed-files
         run: |
-          # 修复中文编码问题
           git config --global core.quotepath false
           
-          # 找出变动的文件，并使用 jq 工具将其格式化为 JSON 数组
-          # 这是处理带空格文件名的最可靠方法
           FILES_LIST=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
           
           if [ -z "$FILES_LIST" ]; then
             echo "No markdown files changed."
-            # 输出一个空的 JSON 数组
             echo "files=[]" >> $GITHUB_OUTPUT
           else
             echo "Markdown files changed:"
             echo "$FILES_LIST"
-            # 使用 jq 将换行分隔的列表转换为 JSON 数组字符串
-            JSON_ARRAY=$(echo "$FILES_LIST" | jq -R . | jq -s .)
+            # 核心修复：使用更稳健的 jq 命令将 shell 变量转换为 JSON 数组
+            # -R 读取原始字符串，-s 将所有输入行合并成一个数组
+            JSON_ARRAY=$(printf "%s" "$FILES_LIST" | jq -R -s 'split("\n") | map(select(length > 0))')
             echo "files=$JSON_ARRAY" >> $GITHUB_OUTPUT
           fi
 
   # 作业二：根据上一步的文件列表，为每个文件执行发布脚本
   publish-files:
-    # 必须等待 find-changed-files 作业成功完成
     needs: find-changed-files
-    # 只有当文件列表不为空时才运行此作业
     if: ${{ needs.find-changed-files.outputs.files != '[]' }}
     runs-on: ubuntu-latest
-
-    # 使用 strategy/matrix 为每个文件创建一个并行的运行实例
+    
     strategy:
       matrix:
-        # 使用 fromJSON 将上一个作业的输出字符串解析为真正的数组
         file: ${{ fromJSON(needs.find-changed-files.outputs.files) }}
 
     steps:
@@ -361,7 +352,6 @@ jobs:
           CNBLOGS_USERNAME: ${{ secrets.CNBLOGS_USERNAME }}
           CNBLOGS_PASSWORD: ${{ secrets.CNBLOGS_PASSWORD }}
         run: |
-          # 直接将单个文件名作为参数传递，文件名会用引号包裹，非常安全
           python scripts/sync_to_cnblogs.py "${{ matrix.file }}"
 
 ```
