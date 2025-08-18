@@ -2,58 +2,78 @@
 
 name: Publish to Cnblogs
 
-# 触发条件：当推送到 main 分支时触发
 on:
   push:
     branches:
-      - main # 或者 master，根据你的主分支名修改
+      - main
     paths:
-      - '**.md' # <--- 修改点 1: 监听仓库中所有 .md 文件
+      - '**.md'
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行环境
-    
+  # 作业一：找出变动的文件，并将其输出为 JSON 格式
+  find-changed-files:
+    runs-on: ubuntu-latest
+    outputs:
+      # 将找到的文件列表作为 JSON 数组字符串输出
+      files: ${{ steps.changed-files.outputs.files }}
+
     steps:
-      # 第一步：检出代码
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # 获取所有历史记录，以便比较文件差异
+          fetch-depth: 0
 
-      # 第二步：设置 Python 环境
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x' # 使用 Python 3
-
-      # 第三步：找出本次 push 中新增或修改的 .md 文件
       - name: Get changed markdown files
         id: changed-files
         run: |
-          # 核心修复：设置 git 配置，防止文件名中的非 ASCII 字符被转义
+          # 修复中文编码问题
           git config --global core.quotepath false
-          # 使用 git diff 找出从上次提交到本次提交之间，# <--- 修改点 2: 监听仓库中所有 .md 文件
-          # 并将文件名传递给下一步
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
-          if [ -z "$FILES" ]; then
-            echo "No markdown files changed. Skipping."
-            echo "files_changed=false" >> $GITHUB_OUTPUT
+          
+          # 找出变动的文件，并使用 jq 工具将其格式化为 JSON 数组
+          # 这是处理带空格文件名的最可靠方法
+          FILES_LIST=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
+          
+          if [ -z "$FILES_LIST" ]; then
+            echo "No markdown files changed."
+            # 输出一个空的 JSON 数组
+            echo "files=[]" >> $GITHUB_OUTPUT
           else
-            echo "Markdown files changed: $FILES"
-            echo "files_changed=true" >> $GITHUB_OUTPUT
-            echo "files_list=$FILES" >> $GITHUB_OUTPUT
+            echo "Markdown files changed:"
+            echo "$FILES_LIST"
+            # 使用 jq 将换行分隔的列表转换为 JSON 数组字符串
+            JSON_ARRAY=$(echo "$FILES_LIST" | jq -R . | jq -s .)
+            echo "files=$JSON_ARRAY" >> $GITHUB_OUTPUT
           fi
 
-      # 第四步：如果文件有变动，则运行发布脚本
-      - name: Run publish script
-        if: steps.changed-files.outputs.files_changed == 'true'
+  # 作业二：根据上一步的文件列表，为每个文件执行发布脚本
+  publish-files:
+    # 必须等待 find-changed-files 作业成功完成
+    needs: find-changed-files
+    # 只有当文件列表不为空时才运行此作业
+    if: ${{ needs.find-changed-files.outputs.files != '[]' }}
+    runs-on: ubuntu-latest
+
+    # 使用 strategy/matrix 为每个文件创建一个并行的运行实例
+    strategy:
+      matrix:
+        # 使用 fromJSON 将上一个作业的输出字符串解析为真正的数组
+        file: ${{ fromJSON(needs.find-changed-files.outputs.files) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Publish '${{ matrix.file }}' to Cnblogs
         env:
           CNBLOGS_RPC_URL: ${{ secrets.CNBLOGS_RPC_URL }}
           CNBLOGS_BLOG_ID: ${{ secrets.CNBLOGS_BLOG_ID }}
           CNBLOGS_USERNAME: ${{ secrets.CNBLOGS_USERNAME }}
           CNBLOGS_PASSWORD: ${{ secrets.CNBLOGS_PASSWORD }}
         run: |
-          # 将找到的文件列表作为参数传递给 Python 脚本
-          python scripts/sync_to_cnblogs.py ${{ steps.changed-files.outputs.files_list }}
-
+          # 直接将单个文件名作为参数传递，文件名会用引号包裹，非常安全
+          python scripts/sync_to_cnblogs.py "${{ matrix.file }}"
