@@ -1,7 +1,7 @@
-# [From manus]使用 MetaWeblog API 编写自定义脚本 + 利用 GitHub Actions 实现自动化 
+# Github Repo更新同步到cnblog
 
-
-## 1. 推荐方案
+## [From manus]使用 MetaWeblog API 编写自定义脚本 + 利用 GitHub Actions 实现自动化  
+## 1. 推荐方案 
 好的，将 GitHub 动态同步到博客园，通常有两种主流方法：
 
 1.  **利用现成的开源工具**：社区中可能已经有开发者完成了类似需求的工具，我们可以直接配置使用。

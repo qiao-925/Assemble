@@ -31,6 +31,8 @@ jobs:
       - name: Get changed markdown files
         id: changed-files
         run: |
+          # 核心修复：设置 git 配置，防止文件名中的非 ASCII 字符被转义
+          git config --global core.quotepath false
           # 使用 git diff 找出从上次提交到本次提交之间，# <--- 修改点 2: 监听仓库中所有 .md 文件
           # 并将文件名传递给下一步
           FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
