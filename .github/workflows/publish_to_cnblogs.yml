@@ -1,0 +1,57 @@
+# .github/workflows/publish_to_cnblogs.yml
+
+name: Publish to Cnblogs
+
+# 触发条件：当推送到 main 分支时触发
+on:
+  push:
+    branches:
+      - main # 或者 master，根据你的主分支名修改
+    paths:
+      - 'posts/**.md' # 只在 posts 文件夹下的 .md 文件发生变化时触发
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行环境
+    
+    steps:
+      # 第一步：检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 获取所有历史记录，以便比较文件差异
+
+      # 第二步：设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x' # 使用 Python 3
+
+      # 第三步：找出本次 push 中新增或修改的 .md 文件
+      - name: Get changed markdown files
+        id: changed-files
+        run: |
+          # 使用 git diff 找出从上次提交到本次提交之间，在 posts 目录下发生变化的文件
+          # 并将文件名传递给下一步
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'posts/**.md')
+          if [ -z "$FILES" ]; then
+            echo "No markdown files changed. Skipping."
+            echo "files_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "Markdown files changed: $FILES"
+            echo "files_changed=true" >> $GITHUB_OUTPUT
+            echo "files_list=$FILES" >> $GITHUB_OUTPUT
+          fi
+
+      # 第四步：如果文件有变动，则运行发布脚本
+      - name: Run publish script
+        if: steps.changed-files.outputs.files_changed == 'true'
+        env:
+          CNBLOGS_RPC_URL: ${{ secrets.CNBLOGS_RPC_URL }}
+          CNBLOGS_BLOG_ID: ${{ secrets.CNBLOGS_BLOG_ID }}
+          CNBLOGS_USERNAME: ${{ secrets.CNBLOGS_USERNAME }}
+          CNBLOGS_PASSWORD: ${{ secrets.CNBLOGS_PASSWORD }}
+        run: |
+          # 将找到的文件列表作为参数传递给 Python 脚本
+          python scripts/sync_to_cnblogs.py ${{ steps.changed-files.outputs.files_list }}
+
