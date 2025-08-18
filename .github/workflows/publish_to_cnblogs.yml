@@ -35,9 +35,27 @@ jobs:
           else
             echo "Markdown files changed:"
             echo "$FILES_LIST"
-            # 核心修复：使用更稳健的 jq 命令将 shell 变量转换为 JSON 数组
-            # -R 读取原始字符串，-s 将所有输入行合并成一个数组
-            JSON_ARRAY=$(printf "%s" "$FILES_LIST" | jq -R -s 'split("\n") | map(select(length > 0))')
+          
+            # 核心修复：使用纯 Shell 循环手动构建 JSON 数组，不再依赖 jq
+            JSON_ARRAY="["
+            FIRST=true
+            # 使用 while read 循环安全地处理每一行，即使文件名包含空格
+            while IFS= read -r line; do
+              # 忽略空行
+              if [ -z "$line" ]; then continue; fi
+          
+              # 转义文件名中的 " 和 \ 字符，以生成合法的 JSON 字符串
+              ESCAPED_LINE=$(echo "$line" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+          
+              if [ "$FIRST" = false ]; then
+                JSON_ARRAY="$JSON_ARRAY,"
+              fi
+              JSON_ARRAY="$JSON_ARRAY\"$ESCAPED_LINE\""
+              FIRST=false
+            done <<< "$FILES_LIST"
+            JSON_ARRAY="$JSON_ARRAY]"
+          
+            echo "Generated JSON: $JSON_ARRAY"
             echo "files=$JSON_ARRAY" >> $GITHUB_OUTPUT
           fi
 
