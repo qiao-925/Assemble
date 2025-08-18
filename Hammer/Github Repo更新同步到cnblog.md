@@ -191,99 +191,7 @@ if __name__ == "__main__":
 3.  在 `workflows` 文件夹中，创建一个名为 `publish_to_cnblogs.yml` 的文件。
 4.  将以下配置粘贴到 `publish_to_cnblogs.yml` 文件中：
 
-```yaml
-# .github/workflows/publish_to_cnblogs.yml
-
-name: Publish to Cnblogs
-
-# 触发条件：当推送到 main 分支时触发
-on:
-  push:
-    branches:
-      - main # 或者 master，根据你的主分支名修改
-    paths:
-      - 'posts/**.md' # 只在 posts 文件夹下的 .md 文件发生变化时触发
-
-jobs:
-  publish:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行环境
-    
-    steps:
-      # 第一步：检出代码
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # 获取所有历史记录，以便比较文件差异
-
-      # 第二步：设置 Python 环境
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x' # 使用 Python 3
-
-      # 第三步：找出本次 push 中新增或修改的 .md 文件
-      - name: Get changed markdown files
-        id: changed-files
-        run: |
-          # 使用 git diff 找出从上次提交到本次提交之间，在 posts 目录下发生变化的文件
-          # 并将文件名传递给下一步
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'posts/**.md')
-          if [ -z "$FILES" ]; then
-            echo "No markdown files changed. Skipping."
-            echo "files_changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "Markdown files changed: $FILES"
-            echo "files_changed=true" >> $GITHUB_OUTPUT
-            echo "files_list=$FILES" >> $GITHUB_OUTPUT
-          fi
-
-      # 第四步：如果文件有变动，则运行发布脚本
-      - name: Run publish script
-        if: steps.changed-files.outputs.files_changed == 'true'
-        env:
-          CNBLOGS_RPC_URL: ${{ secrets.CNBLOGS_RPC_URL }}
-          CNBLOGS_BLOG_ID: ${{ secrets.CNBLOGS_BLOG_ID }}
-          CNBLOGS_USERNAME: ${{ secrets.CNBLOGS_USERNAME }}
-          CNBLOGS_PASSWORD: ${{ secrets.CNBLOGS_PASSWORD }}
-        run: |
-          # 将找到的文件列表作为参数传递给 Python 脚本
-          python scripts/sync_to_cnblogs.py ${{ steps.changed-files.outputs.files_list }}
-
-```
-
-**这个工作流的解释**：
-*   `on`: 定义了触发条件。这里设置为：只有当 `posts` 文件夹下的 `.md` 文件被推送到 `main` 分支时，才会运行。你可以根据你的文章存放路径和分支名进行修改。
-*   `jobs`: 定义了要执行的任务。
-*   `steps`:
-    1.  `Checkout repository`: 将你的仓库代码下载到运行环境中。`fetch-depth: 0` 很重要，它能获取完整的 git 历史，以便比较文件差异。
-    2.  `Set up Python`: 安装 Python 环境。
-    3.  `Get changed markdown files`: 这是关键一步。它使用 `git diff` 命令来找出两次提交之间具体是哪些 `.md` 文件发生了变化，并将文件名列表输出。
-    4.  `Run publish script`: 如果上一步发现有文件变动，则执行我们的 `sync_to_cnblogs.py` 脚本，并将变动的文件名作为参数传给它。同时，它通过 `env` 字段将我们之前设置的 Secrets 注入到环境变量中，供 Python 脚本读取。
-
-### **如何使用**
-
-1.  在你的 GitHub 仓库中，创建一个 `posts` 文件夹。
-2.  在 `posts` 文件夹里，新建一个 Markdown 文件，例如 `我的第一篇自动发布的文章.md`。
-3.  在文件中写入一些内容。
-4.  使用 `git add`, `git commit`, `git push` 将这个文件推送到你的 `main` 分支。
-5.  进入你 GitHub 仓库的 "Actions" 标签页，你会看到一个名为 "Publish to Cnblogs" 的工作流正在运行。
-6.  等待几分钟，如果一切顺利，你的新文章就会出现在博客园了！
-
----
-
-这个方案已经非常完整和自动化了。接下来，我们可以探讨一些高级玩法：
-
-*   **文章更新**：目前的脚本只实现了新建文章。我们可以修改脚本，让它先检查文章是否已存在（例如通过标题），如果存在则调用 `metaWeblog.editPost` 来更新内容，而不是新建。
-*   **从 Front Matter 读取元数据**：我们可以在 Markdown 文件顶部使用 [YAML Front Matter](https://jekyllrb.com/docs/front-matter/) 来定义标题、分类、标签等，让脚本自动读取这些信息，实现更灵活的发布。
-*   **删除同步**：当在 GitHub 中删除文件时，也同步删除博客园的文章。这需要更复杂的逻辑，要谨慎操作。
-
-您想先尝试实现当前这个基础版本，还是直接挑战更高级的功能？
-
-## 3. 工作流yml文件优化记录
-- ASCII字符转义
-- 文件名包含空格
-
-```angular2html# .github/workflows/publish_to_cnblogs.yml
+```yaml# .github/workflows/publish_to_cnblogs.yml
 
 name: Publish to Cnblogs
 
@@ -320,9 +228,27 @@ jobs:
           else
             echo "Markdown files changed:"
             echo "$FILES_LIST"
-            # 核心修复：使用更稳健的 jq 命令将 shell 变量转换为 JSON 数组
-            # -R 读取原始字符串，-s 将所有输入行合并成一个数组
-            JSON_ARRAY=$(printf "%s" "$FILES_LIST" | jq -R -s 'split("\n") | map(select(length > 0))')
+            
+            # 核心修复：使用纯 Shell 循环手动构建 JSON 数组，不再依赖 jq
+            JSON_ARRAY="["
+            FIRST=true
+            # 使用 while read 循环安全地处理每一行，即使文件名包含空格
+            while IFS= read -r line; do
+              # 忽略空行
+              if [ -z "$line" ]; then continue; fi
+              
+              # 转义文件名中的 " 和 \ 字符，以生成合法的 JSON 字符串
+              ESCAPED_LINE=$(echo "$line" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+              
+              if [ "$FIRST" = false ]; then
+                JSON_ARRAY="$JSON_ARRAY,"
+              fi
+              JSON_ARRAY="$JSON_ARRAY\"$ESCAPED_LINE\""
+              FIRST=false
+            done <<< "$FILES_LIST"
+            JSON_ARRAY="$JSON_ARRAY]"
+            
+            echo "Generated JSON: $JSON_ARRAY"
             echo "files=$JSON_ARRAY" >> $GITHUB_OUTPUT
           fi
 
