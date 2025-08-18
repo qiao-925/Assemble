@@ -8,7 +8,7 @@ on:
     branches:
       - main # 或者 master，根据你的主分支名修改
     paths:
-      - 'posts/**.md' # 只在 posts 文件夹下的 .md 文件发生变化时触发
+      - '**.md' # <--- 修改点 1: 监听仓库中所有 .md 文件
 
 jobs:
   publish:
