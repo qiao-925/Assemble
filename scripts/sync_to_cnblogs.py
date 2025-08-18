@@ -22,7 +22,10 @@ def get_file_content(filepath):
 def post_to_cnblogs(title, content, categories=None):
     """发布文章到博客园"""
     if categories is None:
-        categories = ['[随笔分类]'] # 默认分类
+        # 博客园的默认分类是 '[随笔分类]'
+        # 如果你的 GitHub 仓库有 'posts/tech' 这样的结构，
+        # 可以通过 md_file 路径来动态生成分类
+        categories = ['[随笔分类]']
 
     # 准备文章结构体
     post = {
@@ -30,14 +33,20 @@ def post_to_cnblogs(title, content, categories=None):
         'description': content,
         'dateCreated': datetime.now(),
         'categories': categories,
-        'publish': True  # True 表示发布，False 表示存为草稿
+        'publish': True,  # True 表示发布，False 表示存为草稿
+
+        # --- 核心修复 ---
+        # 添加这个字段，告诉博客园使用 Markdown 渲染器
+        # 这个字段的值必须是 '[Markdown]'
+        'mt_text_more': '[Markdown]'
     }
 
     # 连接服务器并发布
     try:
         server = xmlrpc.client.ServerProxy(RPC_URL)
-        # newPost(blogid, username, password, post_struct, publish)
-        post_id = server.metaWeblog.newPost(BLOG_ID, USERNAME, PASSWORD, post, True)
+        # API 方法是 metaWeblog.newPost
+        # 参数: blogid, username, password, post_struct, publish
+        post_id = server.metaWeblog.newPost(BLOG_ID, USERNAME, PASSWORD, post, post['publish'])
         print(f"✅ 成功发布文章 '{title}'，文章ID: {post_id}")
         return post_id
     except Exception as e:
@@ -53,10 +62,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # 从命令行参数获取需要发布的 Markdown 文件路径
-    # GitHub Actions 会将文件路径作为参数传递给这个脚本
     if len(sys.argv) < 2:
         print("🟡 用法: python sync_to_cnblogs.py <file1.md> [file2.md] ...")
-        sys.exit(0) # 如果没有文件，则正常退出
+        sys.exit(0)
 
     files_to_publish = sys.argv[1:]
     print(f"🚀 准备发布以下文件: {files_to_publish}")
