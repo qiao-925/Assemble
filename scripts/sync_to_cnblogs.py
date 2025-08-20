@@ -61,7 +61,8 @@ def post_to_cnblogs(title, content, categories=None):
 
     # 直接使用原始标题构建 URL
     knowledge_base_url = f"https://assemble.gitbook.io/assemble?q={title}"
-    prepend_content = f"> 关联知识库：[链接]({knowledge_base_url} )\n\n"
+    prepend_content = f"> 关联知识库：<a href=\"{knowledge_base_url}\">{title}</a>\n\n"
+
 
     processed_body = replace_internal_md_links(content)
     final_content = prepend_content + processed_body
