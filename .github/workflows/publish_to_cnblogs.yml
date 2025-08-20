@@ -1,51 +1,49 @@
 # .github/workflows/publish_to_cnblogs.yml
 
-name: Publish to Cnblogs
+name: Publish to Cnblogs on PR
 
 on:
-  push:
+  # 1. 触发器修改：当有 Pull Request 指向 main 分支时触发
+  # 移除了 paths 限制，确保任何 PR 都会触发以方便调试
+  pull_request:
     branches:
       - main
-    paths:
-      - '**.md'
 
 jobs:
-  # 作业一：找出变动的文件，并将其输出为 JSON 格式
-  find-changed-files:
+  # 作业一：找出仓库中所有的 .md 文件，并将其输出为 JSON 格式
+  find-all-files: # 作业名修改以反映新功能
     runs-on: ubuntu-latest
     outputs:
-      files: ${{ steps.changed-files.outputs.files }}
+      files: ${{ steps.find-files.outputs.files }} # 对应下面的 id
 
     steps:
+      # 检出代码是必须的
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3 # 保持您指定的 v3 版本
 
-      - name: Get changed markdown files
-        id: changed-files
+      - name: Get all markdown files
+        id: find-files # id 修改以反映新功能
         run: |
           git config --global core.quotepath false
           
-          FILES_LIST=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- '**.md')
+          # 2. 核心修改：不再使用 git diff，而是使用 find 命令查找所有 .md 文件
+          FILES_LIST=$(find . -type f -name '*.md')
           
           if [ -z "$FILES_LIST" ]; then
-            echo "No markdown files changed."
+            echo "No markdown files found in the repository."
             echo "files=[]" >> $GITHUB_OUTPUT
           else
-            echo "Markdown files changed:"
+            echo "All markdown files found in the repository:"
             echo "$FILES_LIST"
           
-            # 核心修复：使用纯 Shell 循环手动构建 JSON 数组，不再依赖 jq
+            # 您脚本中包含兼容性修复的 JSON 构建逻辑被完整保留
             JSON_ARRAY="["
             FIRST=true
-            # 使用 while read 循环安全地处理每一行，即使文件名包含空格
             while IFS= read -r line; do
-              # 忽略空行
               if [ -z "$line" ]; then continue; fi
-          
-              # 转义文件名中的 " 和 \ 字符，以生成合法的 JSON 字符串
-              ESCAPED_LINE=$(echo "$line" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+              # 新增：移除 find 命令可能产生的前导 './'
+              CLEANED_LINE=$(echo "$line" | sed 's|^\./||')
+              ESCAPED_LINE=$(echo "$CLEANED_LINE" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
           
               if [ "$FIRST" = false ]; then
                 JSON_ARRAY="$JSON_ARRAY,"
@@ -61,17 +59,22 @@ jobs:
 
   # 作业二：根据上一步的文件列表，为每个文件执行发布脚本
   publish-files:
-    needs: find-changed-files
-    if: ${{ needs.find-changed-files.outputs.files != '[]' }}
+    # 3. 更新依赖作业的名称
+    needs: find-all-files
+    if: ${{ needs.find-all-files.outputs.files != '[]' }}
     runs-on: ubuntu-latest
 
     strategy:
+      # 4. 更新 fromJSON 的来源
       matrix:
-        file: ${{ fromJSON(needs.find-changed-files.outputs.files) }}
+        file: ${{ fromJSON(needs.find-all-files.outputs.files) }}
 
     steps:
+      # 5. 明确检出 PR 的 head 分支，确保运行的是源分支的最新代码
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # 保持您指定的 v3 版本
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
