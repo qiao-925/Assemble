@@ -20,29 +20,20 @@ def get_file_content(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return f.read()
 
+# --- 新增的辅助函数 ---
 def replace_internal_md_links(content):
     """
     查找内容中所有指向本地 .md 文件的链接，并将其替换为博客园站内搜索链接。
-    例如，将 [链接文本](./some-article.md)
-    替换为 [链接文本](https://zzk.cnblogs.com/my/s/blogpost-p?Keywords=some-article )
     """
-    # 正则表达式：查找所有 Markdown 链接 `[text](url)`
-    # - (\[.*?\]): 分组1, 匹配链接文本，如 `[some text]`
-    # - \(: 匹配左括号
-    # - (.*?\.md): 分组2, 懒惰匹配所有以 `.md` 结尾的 URL
-    # - \): 匹配右括号
+    # 正则表达式，用于匹配 Markdown 格式的链接，其 URL 以 .md 结尾
     md_link_pattern = re.compile(r'(\[.*?\])\((.*?\.md)\)')
 
     def replacer(match):
-        """
-        这是一个替换函数，会作为 re.sub 的参数被调用。
-        它接收一个匹配对象，并返回替换后的字符串。
-        """
-        link_text = match.group(1)  # 获取链接文本，例如 `[查看详情]`
-        md_path = match.group(2)    # 获取md文件路径，例如 `./other-post.md`
+        """用于 re.sub 的替换函数"""
+        link_text = match.group(1)  # 链接文本，如 `[查看详情]`
+        md_path = match.group(2)    # .md 文件路径，如 `./other-post.md`
 
-        # 从路径中提取文件名，并移除 .md 后缀，作为搜索关键词
-        # os.path.basename 会处理 `./` 或 `../` 等情况
+        # 从路径中提取文件名作为搜索关键词
         keyword = os.path.basename(md_path).replace('.md', '')
 
         # 对关键词进行 URL 编码
@@ -51,20 +42,29 @@ def replace_internal_md_links(content):
         # 构建新的博客园站内搜索 URL
         new_url = f"https://zzk.cnblogs.com/my/s/blogpost-p?Keywords={encoded_keyword}"
 
-        # 返回重组后的新 Markdown 链接
+        # 返回完整的新 Markdown 链接
         return f"{link_text}({new_url} )"
 
-    # 使用 re.sub 和自定义的替换函数来处理整个文本内容
+    # 在整个内容上执行查找和替换
     return md_link_pattern.sub(replacer, content)
+# --- 新增函数结束 ---
 
 
 def post_to_cnblogs(title, content, categories=None):
     """发布文章到博客园"""
 
-    # --- 核心功能：在发布前，处理文章内容中的内部链接 ---
-    processed_content = replace_internal_md_links(content)
-    # --- 功能结束 ---
+    # --- 步骤1: 保留您原有的功能，在内容前补充 GitBook 知识库链接 ---
+    encoded_title = quote(title)
+    knowledge_base_url = f"https://assemble.gitbook.io/assemble?q={encoded_title}"
+    prepend_content = f"> 关联知识库：[链接]({knowledge_base_url} )\n\n"
 
+    # --- 步骤2: 在原始的 content 上执行我们新增的内部链接替换功能 ---
+    processed_body = replace_internal_md_links(content)
+
+    # --- 步骤3: 将顶部引用和处理后的正文结合起来 ---
+    final_content = prepend_content + processed_body
+
+    # --- 发布逻辑 (基于您提供的代码) ---
     final_categories = ['[Markdown]']
     if categories and isinstance(categories, list):
         final_categories.extend(categories)
@@ -73,7 +73,7 @@ def post_to_cnblogs(title, content, categories=None):
 
     post = {
         'title': title,
-        'description': processed_content, # 使用处理过链接的内容
+        'description': final_content, # 使用我们组合后的最终内容
         'dateCreated': datetime.now(),
         'categories': final_categories,
         'publish': True
