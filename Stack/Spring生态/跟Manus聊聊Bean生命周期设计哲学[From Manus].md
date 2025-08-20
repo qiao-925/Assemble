@@ -5,9 +5,9 @@
 
 
 # Ref
-<a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html">Customizing the Nature of a Bean</a>
-<a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html">Container Extension Points</a>
-<a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html#beans-factory-extension-factory-postprocessors">Customizing Configuration Metadata with a BeanFactoryPostProcessor</a>
+- <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html">Customizing the Nature of a Bean</a>
+- <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html">Container Extension Points</a>
+- <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html#beans-factory-extension-factory-postprocessors">Customizing Configuration Metadata with a BeanFactoryPostProcessor</a>
 
 # Bean生命周期设计哲学
 

@@ -1,7 +1,7 @@
 
 ## **Spring 家族演进史：从繁入简，向云而生 [From Manus]**
 
-#### **前言：思维路线 (Thinking Roadmap)**嗯，好。
+#### **前言：思维路线 (Thinking Roadmap)**
 
 本笔记旨在以清晰、精炼的视角，回顾 Spring Framework 与 Spring Boot 这两大核心框架从诞生至今的关键演进脉络。我们的探索路径如下：
 
