@@ -4,6 +4,7 @@ import os
 import sys
 import xmlrpc.client
 from datetime import datetime
+from urllib.parse import quote # 导入用于 URL 编码的模块
 
 # --- 配置信息 ---
 RPC_URL = os.environ.get("CNBLOGS_RPC_URL")
@@ -21,6 +22,20 @@ def get_file_content(filepath):
 def post_to_cnblogs(title, content, categories=None):
     """发布文章到博客园"""
 
+    # --- 新增功能：在内容前补充关联知识库链接 ---
+    # 1. 对标题进行 URL 编码，以安全地放入 URL 中
+    encoded_title = quote(title)
+
+    # 2. 构建完整的知识库链接
+    knowledge_base_url = f"https://assemble.gitbook.io/assemble?q={encoded_title}"
+
+    # 3. 创建 Markdown 引用格式的补充内容 ，并添加两个换行符以确保与正文分隔
+    prepend_content = f"> 关联知识库：[链接]({knowledge_base_url})\n\n"
+
+    # 4. 将补充内容添加到文章原始内容的前面
+    final_content = prepend_content + content
+    # --- 新增功能结束 ---
+
     # --- 核心修复：采用参考脚本的正确逻辑 ---
     # 将 '[Markdown]' 作为一个特殊的分类提交
     # 这是触发博客园 Markdown 渲染器的正确方式
@@ -35,7 +50,7 @@ def post_to_cnblogs(title, content, categories=None):
 
     post = {
         'title': title,
-        'description': content,
+        'description': final_content, # 使用添加了前缀的 final_content
         'dateCreated': datetime.now(),
         'categories': final_categories, # 使用包含 '[Markdown]' 的分类列表
         'publish': True
@@ -70,6 +85,7 @@ if __name__ == "__main__":
             print(f"⚠️ 文件 '{md_file}' 不存在，跳过。")
             continue
 
+        # 注意：这里的标题是从文件名生成的，如果文件名包含空格，链接也会正确处理
         post_title = os.path.basename(md_file).replace('.md', '')
         post_content = get_file_content(md_file)
 
