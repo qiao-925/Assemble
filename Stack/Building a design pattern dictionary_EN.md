@@ -887,3 +887,8 @@ Create a proxy object to control calls to the real object to implement additiona
 proxy: foucs on the control of calling object.
 
 decorator: focus on the function expansion.
+
+
+```
+action test 001
+```

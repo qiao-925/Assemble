@@ -891,3 +891,7 @@ https://refactoringguru.cn/design-patterns/memento
 **代理模式与装饰器模式的区别**：实现方式类似，但目标不同：
 代理：专注于调用对象的控制。
 装饰器：专注于功能扩展。
+
+```
+action test 001
+```
