@@ -289,3 +289,7 @@ git config --global core.quotepath false
 
 - 修复同步后默认使用非markdown格式不进去问题
 参考：https://github.com/nickchen121/cnblogs_automatic_blog_uploading?tab=readme-ov-file
+
+```
+action test 001
+```
