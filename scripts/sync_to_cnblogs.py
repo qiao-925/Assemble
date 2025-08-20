@@ -5,7 +5,7 @@ import sys
 import re
 import xmlrpc.client
 from datetime import datetime
-from urllib.parse import quote
+# from urllib.parse import quote # 不再需要这个模块，可以移除
 
 # --- 配置信息 ---
 RPC_URL = os.environ.get("CNBLOGS_RPC_URL")
@@ -14,8 +14,6 @@ USERNAME = os.environ.get("CNBLOGS_USERNAME")
 PASSWORD = os.environ.get("CNBLOGS_PASSWORD")
 
 # --- 本地化开关 ---
-# True:  强制覆盖模式。如果文章已存在，会用新内容覆盖它。
-# False: 安全同步模式。如果文章已存在，会直接跳过，不作任何修改。
 FORCE_OVERWRITE_EXISTING = True
 
 # --- 函数定义 ---
@@ -32,8 +30,12 @@ def replace_internal_md_links(content):
         link_text = match.group(1)
         md_path = match.group(2)
         keyword = os.path.basename(md_path).replace('.md', '')
-        encoded_keyword = quote(keyword)
-        new_url = f"https://zzk.cnblogs.com/my/s/blogpost-p?Keywords={encoded_keyword}"
+
+        # 核心修改：不再对关键词进行 URL 编码
+        # encoded_keyword = quote(keyword) # 移除此行
+
+        # 直接使用原始关键词构建 URL
+        new_url = f"https://zzk.cnblogs.com/my/s/blogpost-p?Keywords={keyword}"
         return f"{link_text}({new_url} )"
     return md_link_pattern.sub(replacer, content)
 
@@ -52,10 +54,15 @@ def get_existing_post_id(server, title):
 
 def post_to_cnblogs(title, content, categories=None):
     """发布文章到博客园，根据 FORCE_OVERWRITE_EXISTING 开关决定行为。"""
-    # --- 步骤1: 准备最终内容 (逻辑不变) ---
-    encoded_title = quote(title)
-    knowledge_base_url = f"https://assemble.gitbook.io/assemble?q={encoded_title}"
+    # --- 步骤1: 准备最终内容 ---
+
+    # 核心修改：不再对标题进行 URL 编码
+    # encoded_title = quote(title) # 移除此行
+
+    # 直接使用原始标题构建 URL
+    knowledge_base_url = f"https://assemble.gitbook.io/assemble?q={title}"
     prepend_content = f"> 关联知识库：[链接]({knowledge_base_url} )\n\n"
+
     processed_body = replace_internal_md_links(content)
     final_content = prepend_content + processed_body
 
@@ -76,14 +83,10 @@ def post_to_cnblogs(title, content, categories=None):
     # --- 步骤3: 核心发布/更新/跳过逻辑 ---
     try:
         server = xmlrpc.client.ServerProxy(RPC_URL)
-
-        # 检查文章是否已存在
         existing_post_id = get_existing_post_id(server, title)
 
         if existing_post_id:
-            # 文章已存在，根据开关决定下一步操作
             if FORCE_OVERWRITE_EXISTING:
-                # 开关开启，执行覆盖更新
                 print(f"ℹ️ 强制覆盖模式已开启。正在更新文章 '{title}'...")
                 success = server.metaWeblog.editPost(existing_post_id, USERNAME, PASSWORD, post_data, post_data['publish'])
                 if success:
@@ -91,11 +94,9 @@ def post_to_cnblogs(title, content, categories=None):
                 else:
                     print(f"❌ 覆盖更新文章 '{title}' 失败。")
             else:
-                # 开关关闭，直接跳过
                 print(f"ℹ️ 安全同步模式已开启。文章 '{title}' 已存在，将直接跳过。")
-                return # 结束当前函数执行
+                return
         else:
-            # 文章不存在，总是创建新文章
             print(f"📄 未找到文章 '{title}'，将创建新文章。")
             new_post_id = server.metaWeblog.newPost(BLOG_ID, USERNAME, PASSWORD, post_data, post_data['publish'])
             print(f"✅ 成功发布新文章 '{title}'，文章ID: {new_post_id}")
