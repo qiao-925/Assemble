@@ -1,17 +1,17 @@
-# Mind Roadmap
+# 🧠 **Mind Roadmap**
 - Bean生命周期设计哲学
 - “零干预”下的Bean生命周期默认行为
 - Bean生命周期：开发者干预能力（扩展点）完整指南
 
 
-# Ref
+# 📚 **参考资料**
 - <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html">Customizing the Nature of a Bean</a>
 - <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html">Container Extension Points</a>
 - <a href="https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html#beans-factory-extension-factory-postprocessors">Customizing Configuration Metadata with a BeanFactoryPostProcessor</a>
 
-# Bean生命周期设计哲学
+# 🌱 **Bean生命周期设计哲学**
 
-### 核心设计思想一：分离关注点（Separation of Concerns）
+### 🎯 **核心设计思想一：分离关注点（Separation of Concerns）**
 
 Spring的设计者将一个复杂对象的创建过程，精心地拆分成了几个**逻辑上独立且关注点不同**的阶段。这就像盖房子，你不会把和水泥、砌墙、装修、通电通水混在一起做，而是分成地基、主体结构、内部装修等独立步骤。
 
@@ -35,7 +35,7 @@ Spring的设计者将一个复杂对象的创建过程，精心地拆分成了�
 
 ---
 
-### 核心设计思想二：渐进式构建与全面开放（Progressive Construction & Universal Extensibility）
+### 🔧 **核心设计思想二：渐进式构建与全面开放（Progressive Construction & Universal Extensibility）**
 
 “几乎在整个链路上都有可扩展的点”。这并非偶然，而是Spring框架设计哲学的直接体现：**“我们提供一个强大的默认流程，但你在任何一步都可以介入和改变它。”**
 

@@ -1,4 +1,4 @@
-# Github Repo更新同步到cnblog
+# 🔄 **Github Repo更新同步到cnblog**
 
 ## [From manus]使用 MetaWeblog API 编写自定义脚本 + 利用 GitHub Actions 实现自动化  
 ## 1. 推荐方案 
