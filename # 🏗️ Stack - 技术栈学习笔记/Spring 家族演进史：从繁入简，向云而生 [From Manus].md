@@ -1,11 +1,11 @@
 
-## **Spring 家族演进史：从繁入简，向云而生 [From Manus]**
+## 🚀 **Spring 家族演进史：从繁入简，向云而生 [From Manus]**
 
-#### **前言：思维路线 (Thinking Roadmap)**
+#### 📚 **前言：思维路线 (Thinking Roadmap)**
 
 本笔记旨在以清晰、精炼的视角，回顾 Spring Framework 与 Spring Boot 这两大核心框架从诞生至今的关键演进脉络。我们的探索路径如下：
 
-*   **第一章：奠基与革命 (Spring 1.x ~ 4.x):** 聚焦于 Spring Framework 的早期历史。我们将看到它如何从解决 Java EE 的复杂性出发，通过引入 IoC、AOP，并逐步拥抱注解和 JavaConfig，最终为 Spring Boot 的诞生铺平了道路。
+*   **🏗️ 第一章：奠基与革命 (Spring 1.x ~ 4.x):** 聚焦于 Spring Framework 的早期历史。我们将看到它如何从解决 Java EE 的复杂性出发，通过引入 IoC、AOP，并逐步拥抱注解和 JavaConfig，最终为 Spring Boot 的诞生铺平了道路。
 *   **第二章：响应式与云原生 (Spring 5.x ~ 6.x):** 探索 Spring Framework 进入现代化阶段的两次重大变革。我们将重点关注 Spring 5 对“响应式编程”的全面拥抱，以及 Spring 6 为“云原生”和“GraalVM 原生镜像”所做的颠覆性基础重构。
 *   **第三章：生产力的极致追求 (Spring Boot 1.x ~ 3.x):** 将目光转向 Spring Boot，看它如何通过“自动配置”和“约定优于配置”彻底改变了 Java 的开发模式，并跟随 Spring Framework 的脚步，一步步整合响应式能力，并最终成为云原生时代的一流开发平台。
 *   **第四章：拥抱智能：AI 时代的来临 (2023 ~至今):** 审视最新的发展趋势，看 Spring 如何迅速响应生成式 AI 的浪潮，通过推出 **Spring AI** 项目，将强大的 AI 能力无缝融入到企业级 Java 应用中。
@@ -18,7 +18,7 @@
 
 这一时期是 Spring Framework 确立其核心价值并不断自我完善的阶段，其主线是**用简单和灵活对抗 Java EE 的复杂与沉重**。
 
-#### **Spring 1.x (2004): 革命的开端**
+#### 🚀 **Spring 1.x (2004): 革命的开端**
 
 *   **时代背景：** 当时主流的 J2EE 企业级开发，其核心是 EJB (Enterprise JavaBeans)。但 EJB 存在致命问题：1) **重量级**，需要重量级的应用服务器（如 WebSphere, WebLogic）才能运行；2) **侵入性强**，业务对象必须继承特定的 EJB 接口，导致业务代码与技术框架高度耦合，难以测试和复用。
 *   **核心变革：**
@@ -30,7 +30,7 @@
     *   [Rod Johnson's "Expert One-on-One J2EE Design and Development"](https://www.wiley.com/en-us/Expert+One+on+One+J2EE+Design+and+Development-p-9780764543852) (催生 Spring 的思想源头)
     *   [Martin Fowler: Inversion of Control Containers and the Dependency Injection pattern](https://martinfowler.com/articles/injection.html)
 
-#### **Spring 2.x (2006): 拥抱注解，简化 XML**
+#### 📝 **Spring 2.x (2006): 拥抱注解，简化 XML**
 
 *   **时代背景：** Spring 1.x 虽然成功，但随着项目规模扩大，XML 配置文件变得异常臃肿和难以维护。“XML 地狱”成为了新的痛点。开发者需要一种更接近代码、更直观的配置方式。
 *   **核心变革：**
@@ -42,7 +42,7 @@
     *   [Spring Framework 2.0: What's New?](https://www.infoq.com/articles/spring-2.0-whats-new/)
     *   [Spring Framework Docs (2.5): Annotation-based configuration](https://docs.spring.io/spring-framework/docs/2.5.x/reference/beans.html#beans-annotation-config)
 
-#### **Spring 3.x (2009): “去 XML 化”与 REST 支持**
+#### 🌐 **Spring 3.x (2009): "去 XML 化"与 REST 支持**
 
 *   **时代背景：** 随着敏捷开发和 Web 2.0 的兴起，业界对完全摆脱 XML 的呼声越来越高。同时，RESTful 架构风格开始取代笨重的 SOAP，成为 Web API 的主流。
 *   **核心变革：**
@@ -54,7 +54,7 @@
     *   [Spring Framework 3.0 goes GA](https://spring.io/blog/2009/12/16/spring-framework-3-0-goes-ga)
     *   [Baeldung: Spring @Configuration Annotation](https://www.baeldung.com/spring-configuration-annotation)
 
-#### **Spring 4.x (2013): 为 Boot 而生**
+#### 🚀 **Spring 4.x (2013): 为 Boot 而生**
 
 *   **时代背景：** Java 8 即将发布，带来了 Lambda 等革命性新特性。同时，经过多年的发展，Spring 应用的配置和依赖管理虽然已经大大简化，但对于一个新项目来说，从零开始搭建依然需要不少“样板工程”。
 *   **核心变革：**
@@ -72,7 +72,7 @@
 
 进入这个时代，Spring 不再仅仅是追随者和优化者，而是开始主动探索和引领未来的技术方向，核心聚焦于**异步非阻塞**和**云原生**。
 
-#### **Spring 5.x (2017): 响应式编程革命**
+#### ⚡ **Spring 5.x (2017): 响应式编程革命**
 
 *   **时代背景：** 随着 C10K (单机一万并发连接) 问题的日益突出，传统的“一个请求一个线程”的阻塞式 I/O 模型在高并发场景下成为瓶颈。Node.js 等新兴技术栈凭借其事件驱动、非阻塞的特性迅速崛起，对 Java 的地位发起了挑战。
 *   **核心变革：**
@@ -84,7 +84,7 @@
     *   [Spring Blog: Spring Framework 5.0 goes GA](https://spring.io/blog/2017/09/28/spring-framework-5-0-goes-ga)
     *   [Spring Docs: What's New in Spring Framework 5.x](https://docs.spring.io/spring-framework/docs/5.3.x/reference/html/overview.html#overview-whats-new-in-spring-framework-5-x)
 
-#### **Spring 6.x (2022): 奠定云原生基础**
+#### ☁️ **Spring 6.x (2022): 奠定云原生基础**
 
 *   **时代背景：** 云原生和容器化（Docker, Kubernetes）成为部署标准。Serverless、FaaS (Function as a Service) 等架构对应用的启动速度和内存占用提出了极为苛刻的要求。传统的 JVM 应用因其启动慢、内存消耗大而备受诟病。同时，Oracle 将 Java EE 移交给了 Eclipse 基金会，包名从 `javax.*` 变更为了 `jakarta.*`，整个 Java 生态面临一次“大分裂”。
 *   **核心变革：**
@@ -101,9 +101,9 @@
 
 ### **第三章：生产力的极致追求 (Spring Boot 1.x ~ 3.x)**
 
-Spring Boot 的出现，是 Spring “以开发者为中心”理念的终极体现，它让构建复杂的 Spring 应用变得前所未有的简单。
+Spring Boot 的出现，是 Spring "以开发者为中心"理念的终极体现，它让构建复杂的 Spring 应用变得前所未有的简单。
 
-#### **Spring Boot 1.x (2014): “约定优于配置”的胜利**
+#### 🎯 **Spring Boot 1.x (2014): "约定优于配置"的胜利**
 
 *   **时代背景：** 尽管 Spring 4.x 已经非常强大，但从零搭建一个项目仍需进行大量的 XML 配置、依赖版本管理和 Web 服务器配置，这个过程繁琐且易错。业界需要一种更快速、更标准化的方式来启动项目。
 *   **核心变革：**
@@ -115,7 +115,7 @@ Spring Boot 的出现，是 Spring “以开发者为中心”理念的终极体
     *   [Spring Blog: Spring Boot 1.0.0.RELEASE](https://spring.io/blog/2014/04/01/spring-boot-1-0-0-release)
     *   [Spring Boot Docs (1.0): Features - Auto-configuration](https://docs.spring.io/spring-boot/docs/1.0.0.RELEASE/reference/html/boot-features-auto-configuration.html)
 
-#### **Spring Boot 2.x (2018): 现代化与整合**
+#### 🔄 **Spring Boot 2.x (2018): 现代化与整合**
 
 *   **时代背景：** Spring 5.x 带来了响应式编程，但如何将其方便地整合进 Spring Boot 是一个挑战。同时，随着微服务的普及，对应用的可观测性（监控、追踪）提出了更高的要求。
 *   **核心变革：**
@@ -128,7 +128,7 @@ Spring Boot 的出现，是 Spring “以开发者为中心”理念的终极体
     *   [Spring Blog: Spring Boot 2.6.0 available now](https://spring.io/blog/2021/11/18/spring-boot-2-6-0-available-now) (提及循环依赖的变更)
     *   [Micrometer Application Metrics](https://micrometer.io/)
 
-#### **Spring Boot 3.x (2022): 为云而生**
+#### ☁️ **Spring Boot 3.x (2022): 为云而生**
 
 *   **时代背景：** 与 Spring 6.x 完全一致，整个行业都在向云原生迈进，对性能和资源效率的追求达到了前所未有的高度。
 *   **核心变革：**
@@ -147,7 +147,7 @@ Spring Boot 的出现，是 Spring “以开发者为中心”理念的终极体
 
 进入 2023 年，技术世界的焦点迅速从云原生转移到了生成式 AI。Spring 再次展现了其惊人的适应性和前瞻性，迅速行动，旨在让广大的 Java 开发者也能轻松地在应用中集成和使用 AI 能力。
 
-#### **Spring AI (2023): 让 AI 开发变得“Spring”化**
+#### 🤖 **Spring AI (2023): 让 AI 开发变得"Spring"化**
 
 *   **时代背景：** 随着 OpenAI 的 ChatGPT、Google 的 Gemini 等大型语言模型 (LLM) 的爆发，AI 开始从专门的算法领域走向通用的应用开发领域。然而，直接与这些 AI 模型进行交互，需要处理复杂的 API 请求、管理 Prompt (提示词)、解析多样的返回格式，对于普通应用开发者来说存在不小的门槛。Python 生态凭借 LangChain 等库迅速占据了主导地位，Java 社区迫切需要一个统一、简单的解决方案。
 *   **核心变革：**
