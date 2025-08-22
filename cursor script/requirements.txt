@@ -1,0 +1,35 @@
+# 技术信息构建工作流依赖包
+
+# 核心依赖
+requests>=2.31.0          # HTTP请求库
+pyyaml>=6.0              # YAML配置文件解析
+python-dateutil>=2.8.2   # 日期时间处理
+
+# 数据处理
+pandas>=2.0.0            # 数据分析（可选，用于复杂数据处理）
+numpy>=1.24.0            # 数值计算（pandas依赖）
+
+# 网络爬虫增强
+beautifulsoup4>=4.12.0   # HTML解析（用于网页内容提取）
+lxml>=4.9.0              # XML/HTML解析器
+
+# 可视化生成
+matplotlib>=3.7.0        # 基础图表生成
+seaborn>=0.12.0          # 统计图表美化
+plotly>=5.15.0           # 交互式图表
+
+# 文本处理
+textdistance>=4.6.0      # 文本相似度计算（去重功能）
+jieba>=0.42.1            # 中文分词（可选）
+
+# 任务调度
+schedule>=1.2.0          # 定时任务调度
+crontab>=0.23.0          # Cron表达式解析
+
+# 性能优化
+aiohttp>=3.8.0           # 异步HTTP请求（提升采集性能）
+asyncio                  # 异步编程支持（Python内置）
+
+# 可选增强功能
+# openai>=1.0.0          # OpenAI API支持（需要API Key）
+# anthropic>=0.3.0       # Claude API支持（需要API Key）

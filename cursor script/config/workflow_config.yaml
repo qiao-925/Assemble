@@ -1,0 +1,167 @@
+# 🤖 技术信息工作流配置文件
+# 这个配置文件支持完全自定义，你可以根据需要调整各项设置
+
+# 📡 信息源配置
+information_sources:
+  # 🔴 一级信息源（核心权威，每次必采集）
+  primary:
+    - github_trending      # GitHub趋势项目
+    - hackernews          # Hacker News技术讨论
+    
+  # 🟡 二级信息源（补充验证，按需采集）
+  secondary:
+    - infoq_cn           # InfoQ中文站
+    - reddit_programming # Reddit编程社区
+    - stackoverflow_blog # Stack Overflow官方博客
+    
+  # 🟢 自定义信息源（你可以添加任何RSS/API源）
+  custom:
+    - source: "https://feeds.feedburner.com/oreilly/radar/atom10.xml"
+      name: "O'Reilly Radar"
+      weight: 0.8
+      category: "tech_insights"
+    # 你可以在这里添加更多自定义源
+    
+# 🎯 分析重点配置
+analysis_focus:
+  # 技术分析维度
+  technical:
+    - architecture_design     # 架构设计
+    - performance_optimization # 性能优化
+    - scalability_patterns    # 可扩展性模式
+    - security_considerations # 安全考虑
+    
+  # 商业分析维度  
+  business:
+    - ecosystem_impact       # 生态系统影响
+    - market_positioning     # 市场定位
+    - adoption_trends        # 采用趋势
+    - license_strategy       # 开源协议策略
+    
+  # 社区分析维度
+  community:
+    - contributor_dynamics   # 贡献者动态
+    - community_health      # 社区健康度
+    - governance_model      # 治理模式
+    
+# 🎨 输出偏好设置
+output_preferences:
+  # 语言设置
+  language: "zh-CN"
+  
+  # 分析风格
+  style: "deep_analysis"  # 可选: summary, deep_analysis, technical_focus
+  
+  # 内容结构偏好
+  include_timeline: true          # 包含时间线
+  include_references: true        # 包含参考资料
+  include_personal_insights: true # 包含个人洞察
+  include_code_examples: false    # 包含代码示例
+  include_visualizations: true    # 包含可视化图表
+  
+  # 输出格式
+  formats:
+    - markdown    # Markdown文档
+    - json        # 结构化数据
+    # - pdf       # PDF报告（待实现）
+    # - html      # 网页报告（待实现）
+
+# ⏰ 触发机制配置
+trigger_settings:
+  # 定时触发
+  scheduled:
+    daily_report:
+      enabled: true
+      time: "08:00"        # 每天8点
+      content_types: ["tech_news_digest"]
+      
+    weekly_deep_dive:
+      enabled: true
+      day: "monday"        # 每周一
+      time: "09:00"
+      content_types: ["trend_analysis", "project_spotlight"]
+      
+    monthly_summary:
+      enabled: false
+      day: 1               # 每月1号
+      time: "10:00"
+      content_types: ["ecosystem_report", "technology_landscape"]
+  
+  # 手动触发关键词
+  manual_triggers:
+    keywords:
+      - "analyze:"        # analyze:kubernetes/kubernetes
+      - "trending:"       # trending:rust
+      - "compare:"        # compare:redis,memcached,hazelcast
+      - "report:"         # report:ai-infrastructure
+
+# 🔍 过滤和筛选规则
+filtering_rules:
+  # 项目筛选条件
+  project_filters:
+    min_stars: 100           # 最少star数
+    min_activity_days: 30    # 最近活跃天数
+    exclude_languages: []    # 排除的编程语言
+    focus_topics:           # 重点关注的话题
+      - "database"
+      - "cache"
+      - "performance"
+      - "distributed-systems"
+      - "cloud-native"
+      - "ai"
+      - "machine-learning"
+      
+  # 新闻筛选条件  
+  news_filters:
+    exclude_keywords:       # 排除关键词
+      - "crypto"
+      - "nft"
+    focus_keywords:         # 重点关键词
+      - "open source"
+      - "performance"
+      - "architecture"
+      - "scalability"
+
+# 🗂️ 数据存储配置
+storage_settings:
+  # 数据保存位置
+  data_directory: "./data"
+  output_directory: "./output"
+  cache_directory: "./cache"
+  
+  # 数据保留策略
+  retention:
+    raw_data_days: 30      # 原始数据保留30天
+    analysis_data_days: 90 # 分析结果保留90天
+    cache_hours: 24        # 缓存保留24小时
+
+# 🔗 API配置（可选）
+api_settings:
+  github:
+    # GitHub Personal Access Token (提高API限制)
+    # token: "your_github_token_here"
+    rate_limit_delay: 0.1   # API调用间隔（秒）
+    
+  openai:
+    # OpenAI API Key（用于增强分析，可选）
+    # api_key: "your_openai_key_here"
+    model: "gpt-4"
+    max_tokens: 2000
+
+# 🎮 高级功能配置
+advanced_features:
+  # 智能链接验证
+  link_validation:
+    enabled: true
+    timeout: 10
+    retry_count: 3
+    
+  # 内容去重
+  deduplication:
+    enabled: true
+    similarity_threshold: 0.8
+    
+  # 多语言支持
+  multilingual:
+    auto_translate: false
+    target_languages: ["zh-CN"]
