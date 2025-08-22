@@ -1,32 +1,31 @@
-# 🚀 **Redis大事件（8.0回归开源）**
+# 🚀 Redis大事件（8.0回归开源）
+## 📰 **Redis大事件(8.0回归开源)**
 
-## Redis大事件(8.0回归开源)
-
-#### **2009年：Redis诞生**
+#### 🎯 **2009年：Redis诞生**
 Salvatore Sanfilippo [antirez](https://github.com/antirez) 创建Redis，用于开发实时网络日志分析器。Redis的意思是"远程词典服务器"（Remote Dictionary Server）。antirez试图提高其意大利初创公司的可扩展性，在使用传统数据库系统扩展某些类型的工作负载时遇到重大问题后，开始用Tcl制作Redis的第一个概念验证版本原型，后来翻译成C语言并实现了第一个数据类型（列表）。在内部使用该项目几周并取得成功后，antirez决定开源，并在Hacker News上宣布了该项目。该项目开始受到关注，尤其是在Ruby社区中，GitHub和Instagram是首批采用它的公司之一。
 
-#### **2010年3月：antirez被VMware聘用**
+#### 🏢 **2010年3月：antirez被VMware聘用**
 Salvatore Sanfilippo被VMware聘用，这是Redis发展的重要里程碑，标志着Redis开始获得企业级支持。
 
-#### **2013年5月：获得Pivotal Software赞助**
+#### 💰 **2013年5月：获得Pivotal Software赞助**
 Redis获得Pivotal Software（VMware的衍生公司）的赞助，进一步推动了项目的发展。
 
-#### **2015年6月：开发由Redis Ltd.赞助**
+#### 🚀 **2015年6月：开发由Redis Ltd.赞助**
 Redis开发由Redis Ltd.赞助，这是Redis商业化的开始，标志着Redis从个人项目转向企业级服务。
 
-#### **2018年8月：首次协议变更**
+#### ⚠️ **2018年8月：首次协议变更**
 Redis Ltd.宣布将可选的Redis模块从GNU Affero通用公共许可证(AGPL)重新授权为Apache许可证，但需遵守"Commons Clause"附录，该附录限制了Redis模块的商业使用。这意味着这些模块将以源代码形式提供，不再是免费软件。核心Redis软件仍采用BSD许可证，Redis Ltd.承诺维护这些条款。
 
-#### **2018年10月：Redis 5.0发布**
+#### 🎉 **2018年10月：Redis 5.0发布**
 Redis 5.0发布，引入了Redis Stream——一种新的数据结构，允许在单个键上以基于时间的自动序列存储多个字段和字符串值。
 
-#### **2019年2月：协议进一步收紧**
+#### 🔒 **2019年2月：协议进一步收紧**
 由于许可条款存在混淆，Redis模块的Apache公共条款许可证被替换为"Redis源代码可用许可证"（RSAL），该许可证明确禁止将模块作为"数据库、缓存引擎、流处理引擎、搜索引擎、索引引擎或ML/DL/AI服务引擎"的一部分进行商业使用。社区成员在免费开源许可证下对模块进行了最后的修订，并将其分叉为GoodFORM项目。
 
-#### **2020年6月：创始人离职**
+#### 👋 **2020年6月：创始人离职**
 Salvatore Sanfilippo辞去Redis唯一维护者职务。Yossi Gottlieb和Oran Agra接任了Sanfilippo的职位。这标志着Redis从个人项目彻底转向商业项目。[The end of the Redis adventure](http://antirez.com/news/133)
 
-#### **2024年3月：核心软件协议变更**
+#### 🌊 **2024年3月：核心软件协议变更**
 Redis Ltd.宣布从7.4版开始，核心Redis软件将重新采用RSAL和服务器端公共许可证(SSPL)进行授权，这两个许可证均提供源代码且非免费。这一重大决策的背后有着深层的商业逻辑和战略考量。
 
 **协议变更的核心动机**：
@@ -61,7 +60,7 @@ Linux基金会随后宣布，将把最后一个BSD许可版本的Redis分叉为V
 - <a href='https://huangz.blog/2024/post-redis-era.html'>欢迎进入后Redis时代——关于Redis修改许可之后的问题、现状和未来</a>
 
 
-#### **2025年5月：回归AGPL许可证**
+#### 🎊 **2025年5月：回归AGPL许可证**
 Redis Ltd.宣布将从8.0版开始再次将许可证更改为AGPL。这一决策的背后有几个关键因素：
 
 **创始人antirez的回归**：根据[InfoQ的报道](https://www.infoq.cn/article/ev7mdrxasucv8wrjmb2c)，Redis之父antirez在2025年宣布"Redis再次开源"。antirez作为Redis的创始人和开源精神的代表，他的回归对Redis回归开源起到了关键的推动作用。这标志着Redis重新回到了开源文化的根源。
@@ -85,9 +84,9 @@ Redis Ltd.宣布将从8.0版开始再次将许可证更改为AGPL。这一决策
 
 ---
 
-### **协议演变总结与未来展望**
+### 📊 **协议演变总结与未来展望**
 
-#### **Redis协议变更的完整轨迹**
+#### 📈 **Redis协议变更的完整轨迹**
 从2009年到2025年，Redis的开源协议经历了从**完全开放**到**适度控制**再到**重新平衡**的完整演变：
 
 **第一阶段（2009-2018年8月）**：完全开源时代

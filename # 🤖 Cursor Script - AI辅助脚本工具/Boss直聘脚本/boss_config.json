@@ -1,0 +1,21 @@
+{
+  "search_conditions": {
+    "keywords": ["Java开发", "Java工程师", "Java后端"],
+    "city": "杭州",
+    "salary_min": 15000,
+    "salary_max": 30000,
+    "experience": "3-5年",
+    "education": "本科",
+    "company_size": ["100-499人", "500-999人", "1000-9999人"]
+  },
+  "apply_settings": {
+    "max_applications_per_day": 50,
+    "delay_between_applies": [3, 8],
+    "auto_refresh_jobs": true,
+    "skip_applied": true
+  },
+  "browser_settings": {
+    "headless": false,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  }
+}
