@@ -1,0 +1,235 @@
+# ElasticSearch —— Powerful full-text realtime search（纸质笔记）
+
+
+https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/size-shards
+
+https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/field-data-types
+
+.
+
+### **1. Reindex API 的语法和关键选项**
+
+Reindex 的基本作用是：将文档从一个或多个源索引（source）复制到一个目标索引（destination）。
+
+### **基础语法**
+
+json
+
+`POST _reindex{  "source": {    "index": "source_index"  },  "dest": {    "index": "destination_index"  }}`
+
+这个最简单的命令会把 **`source_index`** 的所有文档复制到 **`destination_index`**。
+
+### **关键选项（需要重点关注）**
+
+1. **`conflicts=proceed` (处理版本冲突)**
+    - **语法**: **`"conflicts": "proceed"`**
+    - **作用**: 在 Reindex 过程中，如果目标索引中已经存在一个相同 ID 的文档，默认操作是中止并报错。设置此选项为 **`proceed`** 会让 Reindex 跳过这个冲突的文档，继续处理下一个，并在最终结果中统计冲突的数量。**在大多数情况下，你都应该加上这个选项。**
+2. **`script` (在迁移时转换数据)**
+    - **语法**: **`"script": { "source": "ctx._source.new_field = ctx._source.old_field" }`**
+    - **作用**: 这是 Reindex 最强大的功能之一。它允许你在文档从源索引读出、写入目标索引之前，用脚本对其进行动态修改。比如重命名字段、改变数据结构、增加新字段等。**`ctx._source`** 指向的就是正在被处理的文档。
+3. **`query` (只迁移部分数据)**
+    - **语法**: **`"source": { "index": "source_index", "query": { "match": { "status": "active" } } }`**
+    - **作用**: 在 **`source`** 部分，你可以加一个查询语句，这样就只会迁移匹配该查询的文档。
+4. **后台执行与性能控制**
+    - **`wait_for_completion=false`**: **对于大数据量的 Reindex，强烈建议使用此选项！** 默认情况下，API 请求会一直等到 Reindex 完成才返回。设置为 **`false`** 后，API 会立刻返回一个任务 ID (task ID)，Reindex 进程会在后台异步执行。你可以使用 Task API 来监控其进度。
+    - **`requests_per_second`**: 控制每秒处理的请求数（即批次数），用于限制 Reindex 对集群的性能冲击。默认是 **`1`**（不限制）。可以设置为一个具体的值，如 **`1000`**，来“温柔”地进行迁移。
+    - **`slices`**: 将 Reindex 任务并行化。设置为 **`auto`** 或一个具体的数字（如 **`5`**），可以将一个大的 Reindex 任务切分成多个独立的子任务并行执行，极大提升速度。
+
+### **官方推荐的做法**
+
+- **始终在新的、干净的索引上进行 Reindex**：不要 Reindex 到一个已经有数据的索引中，除非你很清楚自己在做什么。
+- **对于生产环境的大索引，永远使用 `wait_for_completion=false`**，让任务在后台运行。
+- **在 Reindex 期间，临时关闭目标索引的副本和刷新**，可以极大地提升写入速度。jsonReindex 完成后，再将它们恢复原状。
+    
+    `PUT /destination_index/_settings{  "index.number_of_replicas": 0,  "index.refresh_interval": "-1"}`
+    
+- **使用 `slices=auto`** 来让 Elasticsearch 自动决定最佳的并行度。
+
+# Ref
+
+- Official website: https://www.elastic.co/
+- News from official: https://ir.elastic.co/news/press-releases/default.aspx
+- Wikipedia: https://en.wikipedia.org/wiki/Elasticsearch
+- https://xiaoxiami.gitbook.io/elasticsearch
+
+# Install Elasticsearch
+
+- Install command form：https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html#install-deb
+
+```jsx
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.3-amd64.deb
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.3-amd64.deb.sha512
+shasum -a 512 -c elasticsearch-8.15.3-amd64.deb.sha512 
+sudo dpkg -i elasticsearch-8.15.3-amd64.deb
+```
+
+```jsx
+sudo systemctl start elasticsearch.service
+```
+
+- reset password: https://www.elastic.co/guide/en/elasticsearch/reference/current/reset-password.html
+
+`/usr/share/elasticsearch/bin`
+
+bin/elasticsearch-reset-password -u elastic
+
+```jsx
+Notebook:PnrYlOe5WLR8WfVzf8QG
+Host:6Ryx6oCrbtfD_od7VubO
+```
+
+# Install Kibana
+
+- Install：https://www.elastic.co/guide/en/kibana/current/targz.html#install-linux64
+
+```jsx
+curl -O https://artifacts.elastic.co/downloads/kibana/kibana-8.15.3-darwin-x86_64.tar.gz
+curl https://artifacts.elastic.co/downloads/kibana/kibana-8.15.3-darwin-x86_64.tar.gz.sha512 | shasum -a 512 -c - 
+tar -xzf kibana-8.15.3-darwin-x86_64.tar.gz
+cd kibana-8.15.3/ 
+```
+
+# Integrate ElasticSearch by Java
+
+Tips： high level  and low level means the degree of abstract and package
+
+- Recommended from official: https://www.elastic.co/guide/en/elasticsearch/client/index.html
+- Evaluation about client: https://ost.51cto.com/posts/13966
+
+# Build ES DSL
+
+```jsx
+GET /_search
+{
+  "query": { 
+    "bool": { 
+      "must": [
+        { "match": { "title":   "Search"        }},
+        { "match": { "content": "Elasticsearch" }}
+      ],
+      "filter": [ 
+        { "term":  { "status": "published" }},
+        { "range": { "publish_date": { "gte": "2015-01-01" }}}
+      ]
+    }
+  }
+}
+```
+
+## Single-query：signle function
+
+- match：Analyze then search the full text
+- term：exact match ，for structured data
+- terms: actually, in
+- range：just for range date,number and so on
+- exists：exists or not
+
+# Multi-query: combine signle-base query by bool keyword
+
+- must：and
+- should：or
+- must_not：not , no score
+- filter：and, no score
+
+# Other query
+
+## boosting
+
+```jsx
+GET /index_name/_search
+{
+  "query": {
+    "boosting": {
+      "positive": {
+        "match": {
+          "field_name": "apple"
+        }
+      },
+      "negative": {
+        "match": {
+          "field_name": "pie"
+        }
+      },
+      "negative_boost": 0.5  // 减少负向查询的影响
+    }
+  }
+}
+
+1. 查询类型：boosting
+boosting查询允许你定义一个正向查询和一个负向查询，并通过negative_boost参数来调整负向查询的影响。
+2. 正向查询：positive
+positive部分定义了一个match查询，查找field_name字段中包含"apple"的文档。这些文档将获得正常的相关性得分。
+3. 负向查询：negative
+negative部分定义了另一个match查询，查找field_name字段中包含"pie"的文档。这些文档的得分将被降低。
+4. 负向提升：negative_boost
+negative_boost参数设置为0.5，这意味着如果一个文档同时匹配了正向查询和负向查询，它的最终得分将是正向得分乘以0.5。这会降低这些文档在搜索结果中的排名。
+使用场景
+文档排序：**这个查询适合需要优先显示某些文档，同时降低包含特定不希望出现的内容的文档的场景。**例如，在一个食谱搜索中，想要优先显示包含"苹果"的食谱，同时降低那些包含"派"的食谱。
+
+灵活性：通过调整negative_boost的值，可以灵活地控制负向查询的影响程度，以满足不同的需求。
+
+注意事项
+性能：boosting查询的性能通常较好，但在处理复杂查询时，仍需注意查询的效率。
+调试：在实际应用中，建议进行调试和测试，以确保查询结果符合预期。
+```
+
+## **Constant score query**
+
+```jsx
+GET /_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": { "user.id": "kimchy" }
+      },
+      "boost": 1.2
+    }
+  }
+}
+
+Constant Score Query 通过将所有匹配文档的得分设置为一个常量值，从而跳过了得分计算的步骤。
+
+**跳过得分计算，提升过滤性能。**
+
+```
+
+## Nested Query
+
+```jsx
+GET /blog/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "comments",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "comments.author": "kimchy"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "status": "published"  // 过滤条件
+          }
+        }
+      ]
+    }
+  }
+}
+
+Nested Query 通常与复杂的 JSON 数据结构一起使用，尤其是在处理嵌套文档时。
+
+```
