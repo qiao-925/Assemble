@@ -1,4 +1,0 @@
-# 布隆过滤器验证脚本依赖包
-aiohttp>=3.8.0
-asyncio
-typing-extensions>=4.0.0
