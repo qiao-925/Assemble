@@ -1,0 +1,52 @@
+[
+  {
+    "url": "https://redis.io/docs/stack/bloom/",
+    "description": "Redis Bloom官方文档",
+    "status_code": 404,
+    "response_time": 1.092599868774414,
+    "error": null,
+    "content_length": 0,
+    "is_valid": false,
+    "relevance_score": 0
+  },
+  {
+    "url": "https://github.com/RedisBloom/RedisBloom",
+    "description": "Redis Bloom插件仓库",
+    "status_code": 200,
+    "response_time": 0.970388650894165,
+    "error": null,
+    "content_length": 311217,
+    "is_valid": true,
+    "relevance_score": 50
+  },
+  {
+    "url": "https://cloud.tencent.com/developer/article/2459806",
+    "description": "腾讯云Redis Bloom分析",
+    "status_code": 200,
+    "response_time": 0.6927189826965332,
+    "error": null,
+    "content_length": 125329,
+    "is_valid": true,
+    "relevance_score": 20
+  },
+  {
+    "url": "https://krisives.github.io/bloom-calculator/",
+    "description": "Bloom Calculator在线工具",
+    "status_code": 200,
+    "response_time": 0.8769991397857666,
+    "error": null,
+    "content_length": 2995,
+    "is_valid": true,
+    "relevance_score": 40
+  },
+  {
+    "url": "https://redis.io/docs/stack/bloom/",
+    "description": "Redis Bloom官方文档(重复)",
+    "status_code": 404,
+    "response_time": 1.208773136138916,
+    "error": null,
+    "content_length": 0,
+    "is_valid": false,
+    "relevance_score": 0
+  }
+]
