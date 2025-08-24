@@ -1,0 +1,38 @@
+# Wikipedia of SICP
+
+https://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs
+
+> MIT Press published the first edition in 1984, and the second edition in 1996. It was formerly used as the textbook for MIT's introductory course in computer science. SICP focuses on **discovering general patterns for solving specific problems, and building software systems that make use of those patterns.[2]**
+> 
+
+# Discussion about this book(lesson)
+
+https://people.eecs.berkeley.edu/~bh/sicp.html
+
+> Once you learned the big ideas, they thought, and this is my experience also, learning another programming language isn't a big deal; it's a chore for a weekend. I tell my students, "the language in which you'll spend most of your working life hasn't been invented yet, so we can't teach it to you. Instead we have to give you the skills you need to learn new languages as they appear.
+> 
+
+> The idea that computer science should be about ideas, not entirely about programming practice, has since widened to include non-technical ideas about the context and social implications of computing.
+> 
+
+http://lambda-the-ultimate.org/node/5335
+
+> *And more importantly, (2) that they felt that the SICP curriculum no longer prepared engineers for what engineering is like today.*
+> 
+
+https://corecursive.com/039-hal-abelson-sicp/#
+
+> So one of the things that we start with is, we say this course is about abstraction and modularity. And everybody says that now, but they weren’t saying it then. So it was kind of, sort of a different, almost philosophical approach to how you think about programs. And the key thing is it says right in the introduction to the book is that, we don’t think of programming so much as a way to get a computer to do stuff as a way to express ideas about how to do things.
+> 
+
+> Exactly. But I think that’s why from a very high level point of view, this notion of abstraction remains. It’s just that now you can kind of abstract at a much higher level.
+> 
+
+# Resource
+
+https://web.mit.edu/6.001/6.037/sicp.pdf
+
+https://www.bilibili.com/video/BV1Xx41117tr?spm_id_from=333.788.videopod.episodes&vd_source=df1423a8a7e0ce159c006de2322c135e
+
+
+https://www.bilibili.com/video/BV1Xx41117tr/?spm_id_from=333.1387.favlist.content.click&vd_source=df1423a8a7e0ce159c006de2322c135e
