@@ -1,0 +1,22 @@
+Drools规则引擎 —— 业务逻辑分离( 纸质笔记)
+
+https://github.com/j-easy/easy-rules
+
+https://github.com/apache/incubator-kie-drools
+
+https://docs.drools.org/8.44.0.Final/drools-docs/drools/introduction/index.html
+
+**1. DROOLS是什么？**
+
+1. 规则引擎的框架
+2. 用于将规则和业务逻辑拆分开
+
+**2. 规则的循环调用？**
+
+- 规则设计时，应该避免规则的循环调用
+- drools是允许规则的循环调用的
+- 如果必须要用，可能需要注意一下递归情况下的退出条件
+
+**3. 如何拿到drools规则执行过程中的中间态？**
+
+- 全局变量
