@@ -14,7 +14,7 @@ USERNAME = os.environ.get("CNBLOGS_USERNAME")
 PASSWORD = os.environ.get("CNBLOGS_PASSWORD")
 
 # --- 本地化开关 ---
-FORCE_OVERWRITE_EXISTING = True
+FORCE_OVERWRITE_EXISTING = False
 
 # --- 函数定义 ---
 
