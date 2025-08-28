@@ -1,0 +1,12 @@
+https://baomidou.com/introduce/
+
+## 动态SQL
+
+MyBatis 提供了 9 种动态 sql 标签:
+<if></if>
+<where></where>(trim,set)
+<choose></choose>（when, otherwise）
+<foreach></foreach>
+<bind/>
+
+foreach
